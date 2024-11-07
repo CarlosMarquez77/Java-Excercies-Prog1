@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
-package com.mycompany.cadenas;
 import java.util.Scanner;
 /*
  *  Hacer un programa en java para capturar por teclado dos cadenas e imprimir las cadenas carácter
