@@ -1,0 +1,228 @@
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
+class Data {								// Modelo
+    private int roll;
+    private String name;
+    private int marks;
+    private long phone;
+   									 // Constructor
+    public Data (int roll, String name, int marks, long phone) {
+        this.roll = roll;
+        this.name = name;						// Atributos
+        this.marks = marks;
+        this.phone = phone;
+    }
+							
+    public int getRoll() {						// Getters del Modelo
+        return roll;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getMarks() {
+        return marks;
+    }
+
+    public long getPhone() {
+        return phone;
+    }
+// Setters del Modelo
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMarks(int marks) {
+        this.marks = marks;
+    }
+
+    public void setPhone(long phone) {
+        this.phone = phone;
+    }
+}
+
+
+
+class View {									// Vista
+  public int getRoll() {
+    while (true) {
+      try {
+       return Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese # identif estudiante: ","Número de Identificación",JOptionPane.QUESTION_MESSAGE));
+            } catch (NumberFormatException e) {
+             JOptionPane.showMessageDialog(null, "# identif inválido. Favor, ingrese # número entero.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+public String getName() {
+        return JOptionPane.showInputDialog(null,"Ingrese el nombre: ","Digite el nombre",JOptionPane.QUESTION_MESSAGE);
+    }
+
+public int getMarks() {
+  while (true) {
+     try {
+           return Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese Notas: ","Digite su calificación",JOptionPane.QUESTION_MESSAGE));
+          } catch (NumberFormatException e) {
+           JOptionPane.showMessageDialog(null, "Nota inválida. Favor, ingrese # entero.", "Error", JOptionPane.ERROR_MESSAGE);
+          }
+        }
+    }
+
+public long getPhone() {
+ while (true) {
+      try {
+             return Long.parseLong(JOptionPane.showInputDialog(null,"Ingrese # teléf.: ","Digite # Teléfono",JOptionPane.QUESTION_MESSAGE));
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "# teléf. inválido. Favor, ingrese # largo.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    							// Método para mostrar los datos de los estudiantes
+ public void printValues(ArrayList<Data> list) {
+     StringBuilder output = new StringBuilder();
+
+     for (Data data : list) {
+          output.append(data.getRoll()).append(" ").append(data.getName()).append(" ").append(data.getMarks()).append(" ").append(data.getPhone()).append("\n");
+         }							  // Mostrar los resultados
+        JOptionPane.showMessageDialog(null, output.toString(), "Datos del Estudiante", JOptionPane.INFORMATION_MESSAGE);
+    }
+public void showMessage(String message) {
+    JOptionPane.showMessageDialog(null,message,"Información",JOptionPane.INFORMATION_MESSAGE);
+    }
+}
+
+class Controller {						// Controlador
+    private View view;
+    private ArrayList<Data> list;
+    						
+    public Controller(View view) {				// Constructor del controlador
+        this.view = view;
+        this.list = new ArrayList<>();
+    }
+
+// Método para mostrar el menú
+    public void showMenu() {
+        boolean running = true;
+
+        while (running) {
+            String menu = "1. Ingresar Estudiantes \n 2. Visualizar Estudiantes \n 3. Modificar Estudiantes \n 4. Eliminar Estudiantes \n 5. Salir";
+            String choice = JOptionPane.showInputDialog(null,menu,"Universidad", JOptionPane.PLAIN_MESSAGE);
+            // Verificar si el usuario cerró la ventana (pulsó "X")
+            if (choice == null) {
+            	    running = false; // Salir del bucle si se cierra la ventana
+                view.showMessage("Programa finalizado.");
+                	     continue; // Ir al siguiente ciclo
+            }
+
+
+            switch (choice) {
+                case "1":       addStudent();
+                    break;
+                case "2":	viewStudents();
+                    break;
+                case "3":       modifyStudent();
+                    break;
+                case "4":       deleteStudent();
+                    break;
+                case "5":       running = false;
+                    break;
+                default:         view.showMessage("Opción inválida. Por favor, elija una opción del 1 al 4.");
+            }
+        }       
+    }
+
+    public void addStudent() {				// Método para agregar un estudiante
+        int roll=0;
+        boolean validRoll = false;
+        
+         while (!validRoll) {
+            roll = view.getRoll();
+            validRoll = true;
+            for (Data data : list) {
+                if (data.getRoll() == roll) {
+                    view.showMessage("El identificador ya existe. Ingrese uno diferente.");
+                    validRoll = false;
+                    break;
+                }
+            }
+        }
+
+        String name;
+        
+        while (true) {
+            name = view.getName();
+            if (name != null && !name.trim().isEmpty()) {
+                break; // Salir del bucle cuando el nombre sea válido
+            }
+            view.showMessage("El nombre no puede estar vacío. Ingrese un nombre válido.");
+        }
+        
+        int marks;
+        // Validación de nota
+        while (true) {
+            marks = view.getMarks();
+            if (marks >= 0 && marks <= 5) {
+                break; // Salir del bucle cuando la nota sea válida
+            }
+            view.showMessage("La nota debe estar entre 0 y 5. Ingrese una nota válida.");
+        }
+
+        
+        long phone = view.getPhone();
+        
+        list.add(new Data(roll, name, marks, phone));
+        view.showMessage("Estudiante agregado exitosamente.");
+    }
+    public void viewStudents() {			// Método para visualizar estudiantes
+        if (list.isEmpty()) {
+            view.showMessage("No hay estudiantes para mostrar.");
+        } else {
+            view.printValues(list);
+        }
+    }
+    							
+    public void modifyStudent() {			// Método para modificar un estudiante
+        int rollToModify = view.getRoll();
+        for (Data data : list) {
+            if (data.getRoll() == rollToModify) {
+                String newName = view.getName();
+                int newMarks = view.getMarks();
+                long newPhone = view.getPhone();
+
+                data.setName(newName);
+                data.setMarks(newMarks);
+                data.setPhone(newPhone);
+                
+                view.showMessage("Estudiante modificado exitosamente.");
+                return;
+            }
+        }
+        view.showMessage("Estudiante no encontrado.");
+    }
+    
+    public void deleteStudent() {
+        int rollToDelete = view.getRoll();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getRoll() == rollToDelete) {
+                list.remove(i);
+                view.showMessage("Estudiante eliminado exitosamente.");
+                return;
+            }
+        }
+        view.showMessage("Estudiante no encontrado.");
+    }
+}
+
+public class CustomArrayListMVC {					
+
+    public static void main(String[] args) {
+        
+        View view = new View();
+        Controller controller = new Controller(view);
+
+        controller.showMenu();
+    }
+}
