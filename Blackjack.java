@@ -1,10 +1,3 @@
-package com.mycompany.blackjack;
-
-/**
- *
- * @author Carlos Márquez
- */
-
 //MAIN CLASS
 public class Blackjack {
 
